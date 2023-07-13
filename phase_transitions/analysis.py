@@ -5,7 +5,7 @@ import moviepy.editor as mp
 from scipy.io.wavfile import read as wavread
 
 
-def order(dataframe, frame_number):
+def hex_order(dataframe, frame_number):
     '''
     Extracts the hexatic order from a pandas dataframe.
     Calculates the magnitude of the order.
@@ -49,11 +49,15 @@ def video_to_duty(video_file_path):
     return duty
 
 
-path = "C:/Users/ppyol1/Documents/videos/expt_2/"
+path = "videos/exp_2/"
 
-data_filename_liquid = path+"19920001.hdf5"
+data_filename_liquid = path+"19920010.hdf5"
 data_filename_solid = path+"19920070.hdf5"
 data_filename_int = path+"19920050.hdf5"
+
+video_file_s = path+"19920070.MP4"
+video_file_l = path+"19920001.MP4"
+video_file_i = path+"19920050.MP4"
 
 data_frame_s = pd.read_hdf(data_filename_solid)
 data_frame_l = pd.read_hdf(data_filename_liquid)
@@ -63,19 +67,15 @@ data_frame_s.index.name='index'
 data_frame_l.index.name="index"
 data_frame_i.index.name="index"
 
-video_file_s = path+"19920070.MP4"
-video_file_l = path+"19920001.MP4"
-video_file_i = path+"19920050.MP4"
-
 duty_s = video_to_duty(video_file_s)
 duty_i = video_to_duty(video_file_i)
 duty_l = video_to_duty(video_file_l)
 
-frame_number = 20
+frame_number = 10
 
-order_s = order(data_frame_s, frame_number)
-order_i = order(data_frame_i, frame_number)
-order_l = order(data_frame_l, frame_number)
+order_s = hex_order(data_frame_s, frame_number)
+order_i = hex_order(data_frame_i, frame_number)
+order_l = hex_order(data_frame_l, frame_number)
 
 #count = np.count_nonzero(order > 0.75) / len(hexatic_order)
 
@@ -87,6 +87,6 @@ ax2.hist(order_i, bins=200)
 ax2.text(0,75,"Duty: "+str(duty_i)+"%")
 ax3.hist(order_s, bins=200)
 ax3.text(0,75,"Duty: "+str(duty_s)+"%")
-print(duty_l, duty_i, duty_s)
+
 
 plt.show()

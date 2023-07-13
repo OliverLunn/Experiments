@@ -1,14 +1,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.optimize import curve_fit
 
 #load in acc data + duty cycles
-acc_1 = np.loadtxt("acceleration1.txt", dtype=float)
-acc_2 = np.loadtxt("acceleration2.txt", dtype=float)
-acc_3 = np.loadtxt("acceleration3.txt", dtype=float)
-acc_4 = np.loadtxt("acceleration4.txt", dtype=float)
-acc_5 = np.loadtxt("acceleration5.txt", dtype=float)
-duty_cycle = np.loadtxt("duty_cycle.txt", dtype=float)
+acc_1 = np.loadtxt("acceleration_data1.txt", dtype=float)
+acc_2 = np.loadtxt("acceleration_data2.txt", dtype=float)
+acc_3 = np.loadtxt("acceleration_data3.txt", dtype=float)
+acc_4 = np.loadtxt("acceleration_data4.txt", dtype=float)
+acc_5 = np.loadtxt("acceleration_data5.txt", dtype=float)
+duty_cycle = np.loadtxt("duty_cycle_data.txt", dtype=float)
 
 #stack data columns
 acc_data = np.stack((acc_1, acc_2, acc_3, acc_4, acc_5), axis=1)
