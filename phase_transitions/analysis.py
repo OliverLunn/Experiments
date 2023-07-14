@@ -5,7 +5,7 @@ import moviepy.editor as mp
 from scipy.io.wavfile import read as wavread
 
 
-def hex_order(dataframe, frame_number):
+def hex_order(dataframe):
     '''
     Extracts the hexatic order from a pandas dataframe.
     Calculates the magnitude of the order.
@@ -17,8 +17,8 @@ def hex_order(dataframe, frame_number):
     Outputs : 
     order : array of magnitudes of heaxtic_order param
     '''
-    frame_data = dataframe.loc[frame_number]
-    hex_order = frame_data[["hexatic_order"]]
+    
+    hex_order = dataframe[["hexatic_order"]]
     order = np.abs(hex_order)
     
     return order
@@ -49,14 +49,14 @@ def video_to_duty(video_file_path):
     return duty
 
 
-path = "videos/exp_3/"
-data_filename_liquid = path+"19940032.hdf5"
-data_filename_solid = path+"19940032.hdf5"
-data_filename_int = path+"19940032.hdf5"
+path = "videos/exp_2/"
+data_filename_liquid = path+"19960020.hdf5"
+data_filename_solid = path+"19960030.hdf5"
+data_filename_int = path+"19960040.hdf5"
 
-video_file_s = path+"19940032.MP4"
-video_file_l = path+"19940032.MP4"
-video_file_i = path+"19940032.MP4"
+video_file_s = path+"19960020.MP4"
+video_file_l = path+"19960030.MP4"
+video_file_i = path+"19960040.MP4"
 
 data_frame_s = pd.read_hdf(data_filename_solid)
 data_frame_l = pd.read_hdf(data_filename_liquid)
@@ -70,22 +70,22 @@ duty_s = video_to_duty(video_file_s)
 duty_i = video_to_duty(video_file_i)
 duty_l = video_to_duty(video_file_l)
 
-frame_number = 10
 
-order_s = hex_order(data_frame_s, frame_number)
-order_i = hex_order(data_frame_i, frame_number)
-order_l = hex_order(data_frame_l, frame_number)
+
+order_s = hex_order(data_frame_s)
+order_i = hex_order(data_frame_i)
+order_l = hex_order(data_frame_l)
 
 #count = np.count_nonzero(order > 0.75) / len(hexatic_order)
 
 fig, (ax1,ax2,ax3) = plt.subplots(3, 1, sharey=True)
 ax1.set_title("Distribution of |$\Psi_6$|")
 ax1.hist(order_l, bins=200)
-ax1.text(0,75,"Duty: "+str(duty_l)+"%")
+ax1.text(0,750,"Duty: "+str(duty_l)+"%")
 ax2.hist(order_i, bins=200)
-ax2.text(0,75,"Duty: "+str(duty_i)+"%")
+ax2.text(0,750,"Duty: "+str(duty_i)+"%")
 ax3.hist(order_s, bins=200)
-ax3.text(0,75,"Duty: "+str(duty_s)+"%")
+ax3.text(0,750,"Duty: "+str(duty_s)+"%")
 
 
 plt.show()

@@ -52,10 +52,11 @@ def video_to_duty(video_filepath):
     return duty
 
 if __name__ == '__main__':
-    directory = filehandling.open_directory("videos/exp_1")
+    path = "videos/exp_2/"
+    directory = filehandling.open_directory(path)
     files = filehandling.get_directory_filenames(directory+"/*.hdf5")
 
-    #dataframe = pd.read_hdf("videos/exp_1/19910005.hdf5")
+    #dataframe = pd.read_hdf("videos/exp_2/19960022.hdf5")
     #print(dataframe)
 
     dutys = []
@@ -66,7 +67,7 @@ if __name__ == '__main__':
         for file in files:
 
             filename = os.path.splitext(os.path.split(file)[1])[0]
-            path = "videos/exp_1/"
+            
             filepath = path+filename+".hdf5"
         
             dataframe = pd.read_hdf(filepath)
@@ -76,7 +77,7 @@ if __name__ == '__main__':
             hex_order = dataframe[["hexatic_order"]]
             order = np.abs(hex_order)
             
-            duty = video_to_duty("videos/exp_1/"+filename+".MP4")
+            duty = video_to_duty(path+filename+".MP4")
             count = np.count_nonzero(order>0.85) / len(order)
 
             counts.append(count)
@@ -85,7 +86,7 @@ if __name__ == '__main__':
             print(count)
         
         fig, ax = plt.subplots()
-        ax.plot(counts, dutys, ".")
-        ax.set_ylabel("Duty Cycle, %")
-        ax.set_xlabel("Phase Info (ratio crystal)")
+        ax.plot(dutys, counts, ".")
+        ax.set_xlabel("Duty Cycle, %")
+        ax.set_ylabel("Phase Info (ratio crystal)")
         plt.show()
