@@ -52,42 +52,38 @@ def video_to_duty(video_filepath):
     return duty
 
 if __name__ == '__main__':
-    directory = filehandling.open_directory("videos/exp_3")
-    files = filehandling.get_directory_filenames(directory+"/*.csv")
+    directory = filehandling.open_directory("videos/exp_1")
+    files = filehandling.get_directory_filenames(directory+"/*.hdf5")
 
-    #dataframe = pd.read_csv("videos/exp_3/19940042.csv")
+    #dataframe = pd.read_hdf("videos/exp_1/19910005.hdf5")
     #print(dataframe)
 
     dutys = []
     counts = []
+    
 
     if True:
         for file in files:
 
             filename = os.path.splitext(os.path.split(file)[1])[0]
-            path = "videos/exp_3/"
-            filepath = path+filename+".csv"
+            path = "videos/exp_1/"
+            filepath = path+filename+".hdf5"
         
-            dataframe = pd.read_csv(filepath)
-            
+            dataframe = pd.read_hdf(filepath)
+
             dataframe.index.name='index'
 
             hex_order = dataframe[["hexatic_order"]]
-            order_array = hex_order.to_numpy()
-            flat_array = np.ndarray.flatten(order_array)
-            new_order = np.char.replace(flat_array, "()","")
+            order = np.abs(hex_order)
             
-            #order = np.abs(flat_array)
-            print("order")
-            '''
-            duty = video_to_duty("videos/exp_3/"+filename+".MP4")
+            duty = video_to_duty("videos/exp_1/"+filename+".MP4")
             count = np.count_nonzero(order>0.85) / len(order)
 
             counts.append(count)
             dutys.append(duty)
-        
+
             print(count)
-            '''
+        
         fig, ax = plt.subplots()
         ax.plot(counts, dutys, ".")
         ax.set_ylabel("Duty Cycle, %")
