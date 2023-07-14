@@ -49,15 +49,14 @@ def video_to_duty(video_file_path):
     return duty
 
 
-path = "videos/exp_2/"
+path = "videos/exp_3/"
+data_filename_liquid = path+"19940032.hdf5"
+data_filename_solid = path+"19940032.hdf5"
+data_filename_int = path+"19940032.hdf5"
 
-data_filename_liquid = path+"19920010.hdf5"
-data_filename_solid = path+"19920070.hdf5"
-data_filename_int = path+"19920050.hdf5"
-
-video_file_s = path+"19920070.MP4"
-video_file_l = path+"19920001.MP4"
-video_file_i = path+"19920050.MP4"
+video_file_s = path+"19940032.MP4"
+video_file_l = path+"19940032.MP4"
+video_file_i = path+"19940032.MP4"
 
 data_frame_s = pd.read_hdf(data_filename_solid)
 data_frame_l = pd.read_hdf(data_filename_liquid)
