@@ -5,23 +5,21 @@ import moviepy.editor as mp
 from scipy.io.wavfile import read as wavread
 
 
-def hex_order(dataframe):
+def magnitude_hexatic(dataframe,framenumber):
     '''
     Extracts the hexatic order from a pandas dataframe.
     Calculates the magnitude of the order.
 
     Inputs:
     dataframe : pandas dataframe 
-    frame_number : requested frame of video
 
     Outputs : 
     order : array of magnitudes of heaxtic_order param
     '''
+    framedata = dataframe.loc[[framenumber]]
+    mag_hexatic = framedata[["hexatic_order_abs"]]
     
-    hex_order = dataframe[["hexatic_order"]]
-    order = np.abs(hex_order)
-    
-    return order
+    return mag_hexatic
 
 def video_to_duty(video_file_path):
     '''
@@ -45,47 +43,43 @@ def video_to_duty(video_file_path):
     freq = np.fft.fftfreq(len(audio_array), 1/rate)
     peak = int(abs(freq[np.argmax(ft)]))    #find peak freq.
     duty = (peak - 1000) / 15   #duty cycle conversion
-    duty = float(duty)
     return duty
 
 
-path = "videos/exp_2/"
-data_filename_liquid = path+"19960020.hdf5"
-data_filename_solid = path+"19960030.hdf5"
-data_filename_int = path+"19960040.hdf5"
+path = "videos/2023_07_19_cooling/set_1/"
+framenumber = 2
 
-video_file_s = path+"19960020.MP4"
-video_file_l = path+"19960030.MP4"
-video_file_i = path+"19960040.MP4"
+data_filename_liquid = path+"19950001.hdf5"
+data_filename_int = path+"19950040.hdf5"
+data_filename_solid = path+"19950075.hdf5"
 
-data_frame_s = pd.read_hdf(data_filename_solid)
+video_file_l = path+"19950001.MP4"
+video_file_i = path+"19950040.MP4"
+video_file_s = path+"19950075.MP4"
+
+data_frame_s = pd.read_hdf(data_filename_solid) #read in .hdf5 file
 data_frame_l = pd.read_hdf(data_filename_liquid)
 data_frame_i = pd.read_hdf(data_filename_int)
 
-data_frame_s.index.name='index'
+data_frame_s.index.name='index' 
 data_frame_l.index.name="index"
 data_frame_i.index.name="index"
 
-duty_s = video_to_duty(video_file_s)
+duty_s = video_to_duty(video_file_s)    #calc duty from audio freq
 duty_i = video_to_duty(video_file_i)
 duty_l = video_to_duty(video_file_l)
 
+order_s = magnitude_hexatic(data_frame_s, framenumber)  #extract magnitude of hexatic order param from dataframe
+order_i = magnitude_hexatic(data_frame_i, framenumber)
+order_l = magnitude_hexatic(data_frame_l, framenumber)
 
-
-order_s = hex_order(data_frame_s)
-order_i = hex_order(data_frame_i)
-order_l = hex_order(data_frame_l)
-
-#count = np.count_nonzero(order > 0.75) / len(hexatic_order)
-
-fig, (ax1,ax2,ax3) = plt.subplots(3, 1, sharey=True)
+fig, (ax1,ax2,ax3) = plt.subplots(3, 1, sharey=True)    #plot distributions of 3 selected videos
 ax1.set_title("Distribution of |$\Psi_6$|")
-ax1.hist(order_l, bins=200)
-ax1.text(0,750,"Duty: "+str(duty_l)+"%")
-ax2.hist(order_i, bins=200)
-ax2.text(0,750,"Duty: "+str(duty_i)+"%")
-ax3.hist(order_s, bins=200)
-ax3.text(0,750,"Duty: "+str(duty_s)+"%")
-
+ax1.hist(order_l, bins=100)
+ax1.text(0,500,"Duty: "+str(duty_l)+"%")
+ax2.hist(order_i, bins=100)
+ax2.text(0,500,"Duty: "+str(duty_i)+"%")
+ax3.hist(order_s, bins=100)
+ax3.text(0,500,"Duty: "+str(duty_s)+"%")
 
 plt.show()

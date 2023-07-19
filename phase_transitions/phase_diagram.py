@@ -2,13 +2,13 @@ import filehandling
 import numpy as np
 import pandas as pd
 import os
+from tqdm import tqdm
 import matplotlib.pyplot as plt
 import moviepy.editor as mp
-
 from scipy.io.wavfile import read as wavread
-from particletracker.general import dataframes
 
-def hex_o(dataframe):
+
+def magnitude_hexatic(dataframe,framenumber):
     '''
     Extracts the hexatic order from a pandas dataframe.
     Calculates the magnitude of the order.
@@ -19,11 +19,9 @@ def hex_o(dataframe):
     Outputs : 
     order : array of magnitudes of heaxtic_order param
     '''
-    hex_order = dataframe[["hexatic_order"]]
-    order = np.abs(hex_order)
-    
-    return order
-
+    framedata = dataframe.loc[[framenumber]]
+    mag_hexatic = framedata[["hexatic_order_abs"]]
+    return mag_hexatic
 
 def video_to_duty(video_filepath):
     '''
@@ -45,48 +43,53 @@ def video_to_duty(video_filepath):
     
     ft = np.abs(np.fft.fft(audio_array, n=len(audio_array))) #fourier transform audio signal
     freq = np.fft.fftfreq(len(audio_array), 1/rate)
-    peak = int(abs(freq[np.argmax(ft)]))    #find peak freq.
+    peak = abs(freq[np.argmax(ft)])    #find peak freq.
+    #peak = int(abs(freq[np.argmax(ft)]))    #find peak freq.
     duty = (peak - 1000) / 15   #duty cycle conversion
-    duty = float(duty)
-
     return duty
 
 if __name__ == '__main__':
-    path = "videos/exp_2/"
+    path = "videos/2023_07_19_morning/set_1/" #create file directory and select files
+    acc_file = "acceleration_data_1.txt"
+    data_file = "data_1.txt"
     directory = filehandling.open_directory(path)
     files = filehandling.get_directory_filenames(directory+"/*.hdf5")
 
-    #dataframe = pd.read_hdf("videos/exp_2/19960022.hdf5")
-    #print(dataframe)
-
-    dutys = []
+    dutys = []  #initalise empty arrays and params
     counts = []
-    
+    framenumber = 2
 
     if True:
-        for file in files:
-
+        for file in tqdm(files):
+            #asign filename and filepath
             filename = os.path.splitext(os.path.split(file)[1])[0]
-            
             filepath = path+filename+".hdf5"
-        
-            dataframe = pd.read_hdf(filepath)
-
-            dataframe.index.name='index'
-
-            hex_order = dataframe[["hexatic_order"]]
-            order = np.abs(hex_order)
+            dataframe = pd.read_hdf(filepath)   #read .hdf5 file
             
-            duty = video_to_duty(path+filename+".MP4")
-            count = np.count_nonzero(order>0.85) / len(order)
+            dataframe.index.name='index'    #set dataframe index to "index"
 
-            counts.append(count)
+            order = magnitude_hexatic(dataframe, framenumber)   #extract mag of hexatic order param from dataframe
+            duty = video_to_duty(path+filename+".MP4")  #calculate duty from freq of audio signal
+            
+            count = np.count_nonzero(order>0.8) / len(order)    #calculate |\Psi_6| (ratio of phases)
+
+            counts.append(count)    #append to arrays
             dutys.append(duty)
 
-            print(count)
-        
-        fig, ax = plt.subplots()
-        ax.plot(dutys, counts, ".")
-        ax.set_xlabel("Duty Cycle, %")
-        ax.set_ylabel("Phase Info (ratio crystal)")
+        counts = np.transpose(np.array([counts]))   #create columns of counts and duty data
+        dutys = np.transpose(np.array([dutys]))
+        acceleration_data = np.loadtxt(path+acc_file, float)    #load in acc data
+
+        data = np.hstack((counts,dutys)) #stack counts and duty data
+        np.savetxt(path+data_file, data)    #save .txt file of counts and duty
+
+        fig, (ax1,ax2) = plt.subplots(2,1, sharey=False)    #plotting
+        ax1.plot(dutys, counts, ".")
+        ax1.set_xlabel("Duty Cycle, %")
+        ax1.set_ylabel("Phase Info (ratio crystal)")
+
+        ax2.plot(acceleration_data[1:], counts[1:], ".")
+        ax2.set_xlabel("$\Gamma$")
+        ax2.set_ylabel("$\psi$")
+
         plt.show()
