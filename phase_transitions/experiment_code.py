@@ -21,29 +21,31 @@ def pk_acceleration(object):
         string = line.decode()
         string = string.split(',')
         peak_z = float(string[-1])
-
-       
+    
     return peak_z
+
 
 shaker_obj = shaker.Shaker()    #create shaker object
 acc_obj = serial.Serial('COM8', 9600, timeout=None) #create accelerometer object
 
+duties = np.arange(690, 590, -2)    #create arrays of duty values
 
-duties = np.arange(700, 580, -2)    #create arrays of duty values
 acc = []    #empty array for acc data
-d0 = 720    #initial duty values
+d0 = 700    #initial duty values
 
 for duty in tqdm(duties):   #perform experiment
-    shaker_obj.ramp(d0, duty, 1, -1)
+    shaker_obj.ramp(d0, duty, 0.5, -1)
     time.sleep(2)
     shaker_obj.set_duty(duty)
     time.sleep(5)
     shaker_obj.set_duty_and_record(duty)
+
     acceleration = pk_acceleration(acc_obj)
     acc.append(acceleration)
+
     time.sleep(3)
     shaker_obj.set_duty_and_record(duty)
     time.sleep(3)
     d0 = duty
 
-np.savetxt("acceleration_data_1.txt", acc, delimiter=",")
+np.savetxt("acceleration_data_5.txt", acc, delimiter=",")
