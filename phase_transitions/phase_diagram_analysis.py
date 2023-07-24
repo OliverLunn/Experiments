@@ -30,15 +30,17 @@ mean_acc = np.mean(acc_data, axis=1)
 std_acc = np.std(acc_data, axis=1)
 
 #plotting
-fig, (ax1, ax2) = plt.subplots(2,1, sharey=False)
+fig, (ax1, ax2) = plt.subplots(1,2, sharey=False)
 
 ax1.errorbar(mean_duty, mean_count, yerr=std_count, fmt="bd", ecolor="k", capsize=1)
 ax1.set_xlabel("Duty Cycle")
-ax1.set_ylabel("$\Psi_6$")
+ax1.set_ylabel("Ratio crystal")
 
 ax2.errorbar(mean_acc[1:], mean_count[1:], yerr=std_count[1:], fmt="bd", ecolor="k", capsize=1)
 ax2.set_xlabel("Acceleration $\Gamma$")
-ax2.set_ylabel("$\Psi_6$")
+ax2.set_ylabel("Ratio crystal")
 
-
+#ax3.plot(mean_acc[1:], linestyle="-", marker=".", color="k")
+#ax3.set_ylabel("$\Gamma$")
+#ax3.set_xlabel("Index")
 plt.show()

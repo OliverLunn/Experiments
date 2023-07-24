@@ -49,9 +49,9 @@ def video_to_duty(video_filepath):
     return duty
 
 if __name__ == '__main__':
-    path = "videos/2023_07_20_pm/set_5/" #create file directory and select files
-    acc_file = "acceleration_data_5.txt"
-    data_file = "data_5.txt"
+    path = "videos/2023_07_24_pm/set_1/" #create file directory and select files
+    acc_file = "acceleration_data_1.txt"
+    data_file = "data_1.txt"
     directory = filehandling.open_directory(path)
     files = filehandling.get_directory_filenames(directory+"/*.hdf5")
 
@@ -71,7 +71,7 @@ if __name__ == '__main__':
             order = magnitude_hexatic(dataframe, framenumber)   #extract mag of hexatic order param from dataframe
             duty = video_to_duty(path+filename+".MP4")  #calculate duty from freq of audio signal
             
-            count = np.count_nonzero(order>0.9) / len(order)    #calculate |\Psi_6| (ratio of phases)
+            count = np.count_nonzero(order>0.75) / len(order)    #calculate |\Psi_6| (ratio of phases)
 
             counts.append(count)    #append to arrays
             dutys.append(duty)
