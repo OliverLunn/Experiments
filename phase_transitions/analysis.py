@@ -46,16 +46,16 @@ def video_to_duty(video_file_path):
     return duty
 
 
-path = "videos/2023_07_19_cooling/set_1/"
+path = "videos/test/"
+
 framenumber = 2
+data_filename_liquid = path+"19990002.hdf5"
+data_filename_int = path+"19990002.hdf5"
+data_filename_solid = path+"19990002.hdf5"
 
-data_filename_liquid = path+"19950001.hdf5"
-data_filename_int = path+"19950040.hdf5"
-data_filename_solid = path+"19950075.hdf5"
-
-video_file_l = path+"19950001.MP4"
-video_file_i = path+"19950040.MP4"
-video_file_s = path+"19950075.MP4"
+video_file_l = path+"19990002.MP4"
+video_file_i = path+"19990002.MP4"
+video_file_s = path+"19990002.MP4"
 
 data_frame_s = pd.read_hdf(data_filename_solid) #read in .hdf5 file
 data_frame_l = pd.read_hdf(data_filename_liquid)

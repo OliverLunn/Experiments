@@ -8,7 +8,7 @@ import moviepy.editor as mp
 from scipy.io.wavfile import read as wavread
 
 
-def magnitude_hexatic(dataframe,framenumber):
+def hexatic(dataframe,framenumber):
     '''
     Extracts the hexatic order from a pandas dataframe.
     Calculates the magnitude of the order.
@@ -20,8 +20,8 @@ def magnitude_hexatic(dataframe,framenumber):
     order : array of magnitudes of heaxtic_order param
     '''
     framedata = dataframe.loc[[framenumber]]
-    mag_hexatic = framedata[["hexatic_order_abs"]]
-    return mag_hexatic
+    hexatic = framedata[["hexatic_order_abs"]]
+    return hexatic
 
 def video_to_duty(video_filepath):
     '''
@@ -49,14 +49,14 @@ def video_to_duty(video_filepath):
     return duty
 
 if __name__ == '__main__':
-    path = "videos/2023_07_24_pm/set_1/" #create file directory and select files
-    acc_file = "acceleration_data_1.txt"
-    data_file = "data_1.txt"
+    path = "videos/2023_07_25_pm/set_3/" #create file directory and select files
+    acc_file = "acceleration_data_3.txt"
+    data_file = "data_3.txt"
     directory = filehandling.open_directory(path)
     files = filehandling.get_directory_filenames(directory+"/*.hdf5")
 
     dutys = []  #initalise empty arrays and params
-    counts = []
+    global_orders = []
     framenumber = 2
 
     if True:
@@ -68,27 +68,27 @@ if __name__ == '__main__':
             
             dataframe.index.name='index'    #set dataframe index to "index"
 
-            order = magnitude_hexatic(dataframe, framenumber)   #extract mag of hexatic order param from dataframe
-            duty = video_to_duty(path+filename+".MP4")  #calculate duty from freq of audio signal
-            
-            count = np.count_nonzero(order>0.75) / len(order)    #calculate |\Psi_6| (ratio of phases)
+            order = hexatic(dataframe, framenumber)   #extract mag of hexatic order param from dataframe
+            global_order = np.mean(order)   #calc global order param (mean of local param)
 
-            counts.append(count)    #append to arrays
+            duty = video_to_duty(path+filename+".MP4")  #calculate duty from freq of audio signal
+
+            global_orders.append(global_order)    #append to arrays
             dutys.append(duty)
 
-        counts = np.transpose(np.array([counts]))   #create columns of counts and duty data
+        global_orders = np.transpose(np.array([global_orders]))   #create columns of counts and duty data
         dutys = np.transpose(np.array([dutys]))
-        acceleration_data = np.loadtxt(path+acc_file, float)    #load in acc data
+        acceleration_data = np.loadtxt(path+acc_file, dtype=float)    #load in acc data
 
-        data = np.hstack((counts,dutys)) #stack counts and duty data
+        data = np.hstack((global_orders,dutys)) #stack counts and duty data
         np.savetxt(path+data_file, data)    #save .txt file of counts and duty
 
         fig, (ax1,ax2) = plt.subplots(2,1, sharey=False)    #plotting
-        ax1.plot(dutys, counts, ".")
+        ax1.plot(dutys, global_orders, ".")
         ax1.set_xlabel("Duty Cycle, %")
-        ax1.set_ylabel("Phase Info (ratio crystal)")
+        ax1.set_ylabel("Average global order parameter")
 
-        ax2.plot(acceleration_data[1:], counts[1:], ".")
+        ax2.plot(acceleration_data[1:], global_orders[1:], ".")
         ax2.set_xlabel("$\Gamma$")
         ax2.set_ylabel("$\psi$")
 
