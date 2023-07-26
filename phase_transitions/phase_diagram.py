@@ -23,6 +23,20 @@ def hexatic(dataframe,framenumber):
     hexatic = framedata[["hexatic_order_abs"]]
     return hexatic
 
+def particle_number(dataframe, framenumber):
+    '''
+    Extracts the number of particles from a pandas dataframe.
+    Inputs:
+    dataframe : pandas dataframe 
+
+    Outputs : 
+    order : number of particles
+    '''
+    framedata = dataframe.loc[[framenumber]]
+    particles = framedata[["particle"]]
+    particle_num = np.max(particles)
+    return particle_num
+
 def video_to_duty(video_filepath):
     '''
     Returns duty cycle from audio of .MP4 file
@@ -49,15 +63,17 @@ def video_to_duty(video_filepath):
     return duty
 
 if __name__ == '__main__':
-    path = "videos/2023_07_25_pm/set_3/" #create file directory and select files
-    acc_file = "acceleration_data_3.txt"
-    data_file = "data_3.txt"
+    path = "videos/2023_07_26_am/set_1/" #create file directory and select files
+    acc_file = "acceleration_data_1.txt"
+    data_file = "data_1.txt"
     directory = filehandling.open_directory(path)
     files = filehandling.get_directory_filenames(directory+"/*.hdf5")
+    acceleration_data = np.loadtxt(path+acc_file, dtype=float)    #load in acc data
 
     dutys = []  #initalise empty arrays and params
     global_orders = []
-    framenumber = 2
+    area_fractions = []
+    framenumber = 0
 
     if True:
         for file in tqdm(files):
@@ -70,17 +86,20 @@ if __name__ == '__main__':
 
             order = hexatic(dataframe, framenumber)   #extract mag of hexatic order param from dataframe
             global_order = np.mean(order)   #calc global order param (mean of local param)
-
+            global_orders.append(global_order)    #append to array
+            
             duty = video_to_duty(path+filename+".MP4")  #calculate duty from freq of audio signal
+            dutys.append(duty)          #append to array
 
-            global_orders.append(global_order)    #append to arrays
-            dutys.append(duty)
-
-        global_orders = np.transpose(np.array([global_orders]))   #create columns of counts and duty data
+            particles = particle_number(dataframe, framenumber) #find number of particles
+            area_fraction = (particles * 1197) / 3741194   #calculate area fraction of particles
+            area_fractions.append(area_fraction)
+            
+        global_orders = np.transpose(np.array([global_orders]))   #create columns of data in numpy arrays
         dutys = np.transpose(np.array([dutys]))
-        acceleration_data = np.loadtxt(path+acc_file, dtype=float)    #load in acc data
+        area_fractions = np.transpose(np.array([area_fractions]))
 
-        data = np.hstack((global_orders,dutys)) #stack counts and duty data
+        data = np.hstack((global_orders,dutys, area_fractions)) #stack global order params and duty data
         np.savetxt(path+data_file, data)    #save .txt file of counts and duty
 
         fig, (ax1,ax2) = plt.subplots(2,1, sharey=False)    #plotting
@@ -91,5 +110,4 @@ if __name__ == '__main__':
         ax2.plot(acceleration_data[1:], global_orders[1:], ".")
         ax2.set_xlabel("$\Gamma$")
         ax2.set_ylabel("$\psi$")
-
         plt.show()
