@@ -63,9 +63,9 @@ def video_to_duty(video_filepath):
     return duty
 
 if __name__ == '__main__':
-    path = "videos/2023_07_26_am/set_1/" #create file directory and select files
-    acc_file = "acceleration_data_1.txt"
-    data_file = "data_1.txt"
+    path = "videos/2023_07_27_pm/set_5/" #create file directory and select files
+    acc_file = "acceleration_data_5.txt"
+    data_file = "data_5.txt"
     directory = filehandling.open_directory(path)
     files = filehandling.get_directory_filenames(directory+"/*.hdf5")
     acceleration_data = np.loadtxt(path+acc_file, dtype=float)    #load in acc data

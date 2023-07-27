@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-path="videos/2023_07_26_am/"
+path="videos/2023_07_27_pm/"
 
 #load in acc data + duty cycles + counts 
 data1 = np.loadtxt(path+"data_1.txt", dtype=float)
@@ -35,15 +35,15 @@ mean_area_fraction = np.mean(area_fraction)
 std_area_frac = np.std(area_fraction)
 
 #plotting
-fig, (ax1, ax2) = plt.subplots(1,2, sharey=False)
-
+fig, (ax2) = plt.subplots(1,1, sharey=False)
+'''
 ax1.errorbar(mean_duty, mean_count, yerr=std_count, fmt="bd", ecolor="k", capsize=1)
 ax1.set_xlabel("Duty Cycle")
 ax1.set_ylabel("$\Psi_6$")
-
+'''
 ax2.errorbar(mean_acc[1:], mean_count[1:], yerr=std_count[1:], fmt="bd", ecolor="k", capsize=1)
-ax2.set_xlabel("Acceleration $\Gamma$")
-ax2.set_ylabel("$\Psi_6$")
-
-ax1.set_title("Area fraction: "+str(mean_area_fraction)+"$pm$"+str(std_area_frac))
+ax2.set_xlabel("Acceleration $\Gamma$", fontsize=18)
+ax2.set_ylabel("$\Psi_6$", fontsize=18)
+ax2.set_title("Area fraction:{:.3f}".format(mean_area_fraction)+"$+/-${:.3f}".format(std_area_frac))
 plt.show()
+
