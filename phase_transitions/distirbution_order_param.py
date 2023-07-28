@@ -82,19 +82,19 @@ fig, ((ax1,ax2),(ax3,ax4)) = plt.subplots(2,2, sharey=True)    #plot distributio
 
 ax1.set_title("Distribution of |$\Psi_6$|")
 ax1.hist(order_1, bins=100)
-ax1.set_ylabel("Count", fontsize=18)
+ax1.set_ylabel("Count")
 ax1.text(0,225,"Duty Cycle:{:10.1f}".format(duty_1)+"%")
 
 ax2.hist(order_2, bins=100)
 ax2.text(0,225,"Duty Cycle:{:10.1f}".format(duty_2)+"%")
 
 ax3.hist(order_3, bins=100)
-ax3.set_xlabel("|$\Psi_6$|", fontsize=18)
-ax3.set_ylabel("Count", fontsize=18)
+ax3.set_xlabel("|$\Psi_6$|")
+ax3.set_ylabel("Count")
 ax3.text(0,225,"Duty Cycle:{:10.1f}".format(duty_3)+"%")
 
 ax4.hist(order_4, bins=100)
-ax4.set_xlabel("|$\Psi_6$|", fontsize=18)
+ax4.set_xlabel("|$\Psi_6$|")
 ax4.text(0,225,"Duty Cycle:{:10.1f}".format(duty_4)+"%")
 
 plt.show()

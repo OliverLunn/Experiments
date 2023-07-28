@@ -63,9 +63,11 @@ def video_to_duty(video_filepath):
     return duty
 
 if __name__ == '__main__':
-    path = "videos/2023_07_27_pm/set_5/" #create file directory and select files
-    acc_file = "acceleration_data_5.txt"
-    data_file = "data_5.txt"
+
+    path = "videos/2023_07_28_hysteresis/rate_2/set_1h/" #create file directory and select files
+    acc_file = "acceleration_data_1h.txt"
+    data_file = "data_1h.txt"
+
     directory = filehandling.open_directory(path)
     files = filehandling.get_directory_filenames(directory+"/*.hdf5")
     acceleration_data = np.loadtxt(path+acc_file, dtype=float)    #load in acc data
@@ -105,9 +107,9 @@ if __name__ == '__main__':
         fig, (ax1,ax2) = plt.subplots(2,1, sharey=False)    #plotting
         ax1.plot(dutys, global_orders, ".")
         ax1.set_xlabel("Duty Cycle, %")
-        ax1.set_ylabel("Average global order parameter")
+        ax1.set_ylabel("|$\Psi_6$|")
 
         ax2.plot(acceleration_data[1:], global_orders[1:], ".")
         ax2.set_xlabel("$\Gamma$")
-        ax2.set_ylabel("$\psi$")
+        ax2.set_ylabel("|$\Psi_6$|")
         plt.show()
