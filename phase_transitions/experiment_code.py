@@ -24,18 +24,18 @@ def pk_acceleration(ard):
     return peak_z
 
 if __name__ == '__main__':
+    START = 710
+    END =   565
+    STEP = -5
+    RATE = 0.25
 
     with Shaker() as shaker_obj, Arduino(accelerometer_shaker) as acc_obj:
-    
-        duties = np.arange(700, 570, -5)    #create arrays of duty values
-        duties1 = np.arange(570, 700, 5)
+        duties = np.arange(START,END,STEP)    #create arrays of duty values
         acc = []
-        acc1 = [] 
-        d0 = 702   #initial duty values
-        d1 = 568
+        d0 = START+5  #initial duty value
 
         for duty in tqdm(duties):   #perform experiment (cooling cycle)
-            shaker_obj.ramp(d0, duty, 2, -1) 
+            shaker_obj.ramp(d0, duty, RATE, -1) 
             shaker_obj.set_duty(duty)
             time.sleep(8)
             acceleration = pk_acceleration(acc_obj)
@@ -46,17 +46,4 @@ if __name__ == '__main__':
             time.sleep(2)
             d0 = duty
 
-        for duty1 in tqdm(duties1):   #perform experiment (heating cycle)
-            shaker_obj.ramp(d1, duty1, 2, 1) 
-            shaker_obj.set_duty(duty1)
-            time.sleep(8)
-            acceleration = pk_acceleration(acc_obj)
-            acc1.append(acceleration) 
-            shaker_obj.set_duty_and_record(duty1)
-            time.sleep(3)
-            shaker_obj.set_duty_and_record(duty1)
-            time.sleep(2)
-            d1 = duty1
-
-    np.savetxt("acceleration_data_1c.txt", acc, delimiter=",")
-    np.savetxt("acceleration_data_1h.txt", acc1, delimiter=",")
+    np.savetxt("acceleration_data_3.txt", acc, delimiter=",")
