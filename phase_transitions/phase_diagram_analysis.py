@@ -1,7 +1,33 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import scipy.optimize as spy
 
-path="videos/07_31_area_f_0.556/"
+path="videos/07_31_area_f_0.631/"
+
+def linear(x,a,b):
+    return a*x+b
+
+def cubic(x,a,b,c,d):
+    '''
+    3rd order polynomial fit function
+    '''
+    return a*x**3+b*x**2+c*x+d
+
+def quintic(x,a,b,c,d,e,f):
+    '''
+    5th order polynomial fit function
+    '''
+    return a*x**5+b*x**4+c*x**3+d*x**2+e*x+f
+
+def flipped_cubic(x,a,b,c,d):
+    return (1-(a*x**3+b*x**2+c*x+d))**3
+
+def order_mid(ydata):
+    '''
+    Calculates the middle of the global order parameter data
+    '''
+    global_order_mid = (max(ydata)-min(ydata)) / 2 + min(ydata)
+    return global_order_mid
 
 #load in acc data + duty cycles + counts 
 data1 = np.loadtxt(path+"data_1.txt", dtype=float)
@@ -33,12 +59,21 @@ std_acc = np.std(acc_data, axis=1)
 mean_area_fraction = np.mean(area_fraction)
 std_area_frac = np.std(area_fraction)
 
+LOWER_BOUND = int(len(mean_acc[1:])/5)
+UPPER_BOUND = int(4*len(mean_acc[1:])/5)
+#popt, pcov = spy.curve_fit(quintic, mean_acc[LOWER_BOUND:UPPER_BOUND], mean_order[LOWER_BOUND:UPPER_BOUND]) #perform least-squares fit on data
+midpoint_order = order_mid(mean_order[1:])
+
 #plotting
-fig, (ax1) = plt.subplots(1,1, figsize=(10,8), sharey=False)
+fig, (ax1) = plt.subplots(1,1, figsize=(12,8), sharey=False)
 ax1.errorbar(mean_acc[1:], mean_order[1:], yerr=std_order[1:], fmt="bd", ecolor="k", capsize=1)
 ax1.set_xlabel("Acceleration $\Gamma$", fontsize=20)
 ax1.set_ylabel("|$\Psi_6$|", fontsize=20)
-ax1.text(4.2,0.75,"$\phi$: {:.3f}".format(mean_area_fraction)+"$+/-${:.3f}".format(std_area_frac),fontsize=18)
+ax1.text(4.2,0.85,"$\phi$: {:.3f}".format(mean_area_fraction)+"$+/-${:.3f}".format(std_area_frac),fontsize=18)
+
+#ax1.plot(mean_acc[LOWER_BOUND:UPPER_BOUND], quintic(mean_acc[LOWER_BOUND:UPPER_BOUND], *popt), "r-")  #plot fit to data
+print("midpoint of order: ", midpoint_order)
+
 plt.xticks(fontsize=18)
 plt.yticks(fontsize=18)
 plt.show()

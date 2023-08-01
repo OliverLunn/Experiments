@@ -76,9 +76,9 @@ def video_to_duty(video_filepath):
 
 if __name__ == '__main__':
 
-    path = "videos/07_31_area_f_/set_3/" #create file directory and select files
-    acc_file = "acceleration_data_3.txt"
-    data_file = "data_3.txt"
+    path = "videos/08_01_area_f_/set_5/" #create file directory and select files
+    acc_file = "acceleration_data_5.txt"
+    data_file = "data_5.txt"
 
     directory = filehandling.open_directory(path)
     files = filehandling.get_directory_filenames(directory+"/*.hdf5")

@@ -37,13 +37,13 @@ if __name__ == '__main__':
         for duty in tqdm(duties):   #perform experiment (cooling cycle)
             shaker_obj.ramp(d0, duty, RATE, -1) 
             shaker_obj.set_duty(duty)
-            time.sleep(8)
+            time.sleep(6)
             acceleration = pk_acceleration(acc_obj)
             acc.append(acceleration) 
             shaker_obj.set_duty_and_record(duty)
             time.sleep(3)
             shaker_obj.set_duty_and_record(duty)
-            time.sleep(2)
+            time.sleep(1)
             d0 = duty
-
-    np.savetxt("acceleration_data_3.txt", acc, delimiter=",")
+    
+    np.savetxt("acceleration_data_5.txt", acc, delimiter=",")
