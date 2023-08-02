@@ -46,4 +46,4 @@ if __name__ == '__main__':
             time.sleep(1)
             d0 = duty
     
-    np.savetxt("acceleration_data_5.txt", acc, delimiter=",")
+    np.savetxt("acceleration_data_3.txt", acc, delimiter=",")
