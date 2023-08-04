@@ -23,8 +23,8 @@ duty_cycle = duty_cycle / 10    #converting to percentage
 fig, ax = plt.figure(1), plt.axes()
 ax.errorbar(duty_cycle, mean_acc_data, yerr=std_acc_data,fmt=".", ecolor="b", capsize=5, label="Measured data") #errorbar plot.
 
-#ax.plot(j_duty, j_acc, linestyle="-", marker=".", color="r", label="James's Thesis data")      #plot of James's data
-#ax.plot(j_duty, np.sqrt(2)*j_acc, linestyle="-", marker=".", color="k", label="James's Thesis data x sqrt(2)")     #plot of James's data * root (2) 
+ax.plot(j_duty, j_acc, linestyle="-", marker=".", color="r", label="James's Thesis data")      #plot of James's data
+ax.plot(j_duty, np.sqrt(2)*j_acc, linestyle="-", marker=".", color="k", label="James's Thesis data x sqrt(2)")     #plot of James's data * root (2) 
 
 ax.set_xlabel("Duty Cycle")
 ax.set_ylabel("Peak z-acceleration ($\Gamma$)")

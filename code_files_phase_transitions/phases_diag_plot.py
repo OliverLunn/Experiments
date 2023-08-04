@@ -1,13 +1,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.optimize as opt
-
+'''
+This script plots the phase diagram.
+Requires a .txt file contining the area fraction and acceleration data.
+'''
 def polynomial(x,a,b,c):
     return a*x**2+b*x+c
-def linear(x,a,b):
-    return a*x+b
 
-data = np.loadtxt("phase_transitions/phase_diagram_data.txt")
+data = np.loadtxt("code_files_phase_transitions/phase_diagram_data.txt")
 phi = data[0,:]
 gamma = data[1,:]
 
